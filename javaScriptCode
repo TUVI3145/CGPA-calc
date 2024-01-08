@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CGPA Calculator</title>
+</head>
+<body>
+
+<div id="calculator">
+  <h2>CGPA Calculator</h2>
+  <table id="courses">
+  </table>
+  <button id="addCourse">Add Course</button>
+  <button id="calculate">Calculate CGPA</button>
+  <p id="result"></p>
+</div>
+
+<script>
+  const courseTable = document.getElementById("courses");
+const addCourseButton = document.getElementById("addCourse");
+const calculateButton = document.getElementById("calculate");
+const resultElement = document.getElementById("result");
+
+let courseCount = 0;
+
+function addCourseRow() {
+  courseCount++;
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="text" placeholder="Course Code" class="course-code"></td>
+    <td><input type="number" placeholder="Credit Units" class="credit-units"></td>
+    <td><input type="text" placeholder="Grade" class="grade"></td>
+  `;
+  courseTable.appendChild(row);
+}
+
+addCourseButton.addEventListener("click", addCourseRow);
+
+function calculateCGPA() {
+  let totalGradePoints = 0;
+  let totalCreditUnits = 0;
+
+  const courseRows = courseTable.querySelectorAll("tr");
+  for (const row of courseRows) {
+    const courseCode = row.querySelector(".course-code").value;
+    const creditUnits = parseFloat(row.querySelector(".credit-units").value);
+    const grade = row.querySelector(".grade").value.toUpperCase();
+
+    const gradePoints = getGradePoints(grade);
+    if (isNaN(gradePoints)) {
+      alert("Invalid grade entered for " + courseCode);
+      return;
+    }
+
+    totalGradePoints += gradePoints * creditUnits;
+    totalCreditUnits += creditUnits;
+  }
+
+  const cgpa = totalGradePoints / totalCreditUnits;
+  resultElement.textContent = "Your CGPA is: " + cgpa.toFixed(2);
+}
+
+calculateButton.addEventListener("click", calculateCGPA);
+
+function getGradePoints(grade) {
+  // Replace this with your institution's grading system
+  switch (grade) {
+    case "A":
+      return 4.0;
+    case "B":
+      return 3.0;
+    case "C":
+      return 2.0;
+    case "D":
+      return 1.0;
+    case "F":
+      return 0.0;
+    default:
+      return NaN;
+  }
+}
+
+</script>
+
+</body>
+</html>
